@@ -1,0 +1,28 @@
+
+main {
+  max-width: 310px;
+  border: 1px solid red;
+  margin:2rem auto 0 auto;
+}
+.cal{
+  display: flex;
+  gap:10px;
+  flex-direction: column;
+ 
+}
+.row{
+  display: flex;
+gap:10px;
+
+& li {
+  background-color: aqua;
+  & button {
+    width: 70px;
+    /* max-width: 70px;
+    max-height: 70px; */
+    height: 70px;
+    
+  }
+}
+ 
+}
