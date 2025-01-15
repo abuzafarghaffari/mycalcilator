@@ -1,0 +1,79 @@
+import { useState, useEffect } from "react";
+import "./App.css";
+
+const board = [
+  ["AC", "Del", "/"],
+  ["7", "8", "9", "*"],
+  ["4", "5", "6", "+"],
+  ["1", "2", "3", "-"],
+  ["0", ".", "="],
+];
+
+function Display({ value }) {
+  return <h3 className="bg-slate-100 h-11">{value}</h3>;
+}
+
+function Button({ label, onClick, className }) {
+  return (
+    <button onClick={() => onClick(label)} className={className}>
+      {label}
+    </button>
+  );
+}
+
+function App() {
+  const [total, setTotal] = useState("");
+
+  function clickControl(col) {
+    switch (col) {
+      case "AC":
+        setTotal("");
+        break;
+      case "Del":
+        setTotal((prev) => prev.slice(0, -1));
+        break;
+      case "=":
+        try {
+          setTotal(Function(`"use strict"; return (${total})`)());
+        } catch {
+          setTotal("Error");
+        }
+        break;
+      default:
+        setTotal((prev) => (prev === "Error" ? col : prev + col));
+    }
+  }
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      const key = event.key;
+      if (["AC", "Del", "/", "*", "+", "-", "="].includes(key) || /^[0-9.]$/.test(key)) {
+        clickControl(key === "Enter" ? "=" : key);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  return (
+    <main>
+      <Display value={total} />
+      <ul className="cal">
+        {board.map((row, rowIndex) => (
+          <li key={rowIndex}>
+            <ol className="row">
+              {row.map((col, colIndex) => (
+                <li key={colIndex} className={["AC", "="].includes(col) ? "grow" : ""}>
+                  <Button label={col} onClick={clickControl} />
+                </li>
+              ))}
+            </ol>
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
+}
+
+export default App;
